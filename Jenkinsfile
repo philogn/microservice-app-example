@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        SONAR_TOKEN = credentials('sonarqube-token')
+    }
+
     stages {
         stage('Preparation') {
             steps {
@@ -29,7 +33,7 @@ pipeline {
                     def scannerHome = tool 'SonarScanner' 
                     withSonarQubeEnv("SonarQube") {
                     sh "echo Using scanner at: ${scannerHome}"
-                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.login=squ_087517a319a0833bf9a701614b10fac3eead3b6f \
+                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.login=$SONAR_TOKEN \
                     -Dsonar.exclusions=**/users-api/**"
                     }
                 }
@@ -39,8 +43,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying...'
-                // Simulate deploy process
-                sh 'echo Deploying to environment...'
+                sh 'docker-compose down'
+                sh 'docker-compose up -d'
             }
         }
     }
