@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        sonarScanner 'sonar-scanner' // Tool name defined in Jenkins Global Tool Configuration
-    }
-
     stages {
         stage('Preparation') {
             steps {
@@ -28,6 +24,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
+                def scannerHome = tool 'sonar-scanner' 
                 withSonarQubeEnv() {
                     sh 'sonar-scanner'
                 }
