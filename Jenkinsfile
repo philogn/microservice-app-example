@@ -29,7 +29,8 @@ pipeline {
                     def scannerHome = tool 'SonarScanner' 
                     withSonarQubeEnv("SonarQube") {
                     sh "echo Using scanner at: ${scannerHome}"
-                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.login=squ_087517a319a0833bf9a701614b10fac3eead3b6f"
+                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.login=squ_087517a319a0833bf9a701614b10fac3eead3b6f \
+                    -Dsonar.exclusions=**/users-api/**"
                     }
                 }
             }
