@@ -4,8 +4,7 @@ pipeline {
     stages {
         stage('Preparation') {
             steps {
-                echo 'Preparing...'
-                checkout scm
+                git url: "https://github.com/philogn/microservice-app-example.git", branch: 'main'
             }
         }
 
@@ -13,15 +12,20 @@ pipeline {
             steps {
                 echo 'Building...'
                 // Simulate build process
-                sh 'echo Compiling source code...'
+                sh 'docker-compose build'
             }
         }
 
-        stage('Test') {
+        stage('Trivy FS Scan') {
             steps {
-                echo 'Testing...'
-                // Simulate test process
-                sh 'echo Running unit tests...'
+                sh 'trivy fs --exit-code 0 --severity MEDIUM,HIGH,CRITICAL .'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            def scannerHome = tool 'SonarScanner';
+            withSonarQubeEnv() {
+                sh "${scannerHome}/bin/sonar-scanner"
             }
         }
 
