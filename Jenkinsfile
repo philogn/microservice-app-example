@@ -18,7 +18,7 @@ pipeline {
 
         stage('Trivy FS Scan') {
             steps {
-                sh 'trivy fs --exit-code 0 --severity MEDIUM,HIGH,CRITICAL .'
+                sh 'trivy fs --exit-code 0 --severity MEDIUM,HIGH,CRITICAL . > trivy_report.txt 2>&1'
             }
         }
 
@@ -27,6 +27,7 @@ pipeline {
                 script {
                     def scannerHome = tool 'SonarScanner' 
                     withSonarQubeEnv("SonarQube") {
+                    sh "echo ${scannerHome}"
                     sh "${scannerHome}/bin/sonar-scanner"
                     }
                 }
